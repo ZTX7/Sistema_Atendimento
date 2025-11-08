@@ -26,6 +26,10 @@ O proposito visa o aprendizado de algoritimos e estruturas complexas no cotidian
       <td>Erick Mota Macedo da Silva</td>
       <td>2025-----701</td>
     </tr>
+     <tr>
+      <td>Lucas Regis Costa Silva</td>
+      <td>2025-----064</td>
+    </tr>
   </tbody>
 </table>
 
