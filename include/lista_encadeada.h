@@ -21,5 +21,6 @@ typedef struct Paciente{
 int listaVazia(Paciente *inicio);
 Paciente* criarNo(char nome[], int idade, char cpf[]);
 Paciente* inserirElementoFim(Paciente* lista, char nome[], int idade, char cpf[]);
+Paciente* removerElementoPorCPF(Paciente* lista, const char cpf[]);
 
 #endif

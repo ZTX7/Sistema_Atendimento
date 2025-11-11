@@ -25,7 +25,7 @@ void iniciarSistema(){
             chamarParaFila(gerenciadorDeFilaDupla, listaDePacientes);
             break;
         case 5:
-            finalizarAtendimento(gerenciadorPilha, gerenciadorDeFilaDupla);
+            finalizarAtendimento(gerenciadorPilha, gerenciadorDeFilaDupla, &listaDePacientes);
             break; 
         case 6:
             visualizarHistorico(gerenciadorPilha);   

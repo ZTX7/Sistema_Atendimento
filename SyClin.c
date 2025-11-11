@@ -65,6 +65,36 @@ Paciente* inserirElementoFim(Paciente* lista, char nome[], int idade, char cpf[]
     return lista;
 }
 
+Paciente* removerElementoPorCPF(Paciente* lista, const char cpf[]) {
+    if (listaVazia(lista)) {
+        return NULL;
+    }
+
+    Paciente* atual = lista;
+    Paciente* anterior = NULL;
+
+    if (strcmp(atual->CPF, cpf) == 0) {
+        lista = atual->prox;
+        free(atual);
+        return lista;
+    }
+
+    anterior = atual;
+    atual = atual->prox;
+
+    while (atual != NULL) {
+        if (strcmp(atual->CPF, cpf) == 0) {
+            anterior->prox = atual->prox;
+            free(atual);
+            return lista;
+        }
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    return lista;
+}
+
 //---------------------------------------------------------------
 //                           FILA
 //---------------------------------------------------------------
@@ -222,6 +252,19 @@ void menu() {
     printf("\nSelecione a opcao para continuar: ");
 }
 
+Paciente* buscarPaciente(Paciente* lista, const char cpf[]) {
+    Paciente *temp = lista;
+    
+    while (temp != NULL) {
+        if (strcmp(temp->CPF, cpf) == 0) {
+            return temp;
+        }
+        temp = temp->prox;
+    }
+    
+    return NULL;
+}
+
 Paciente*cadastrar(Paciente *lista) {
     printf("\n\n~~~~~~~~~~ CADASTRANDO PACIENTE ~~~~~~~~~~\n\n");
     
@@ -242,9 +285,19 @@ Paciente*cadastrar(Paciente *lista) {
     cpf[strcspn(cpf, "\n")] = 0;
     
     if (strlen(cpf) != 11){
-        printf("\n> O CPF deve ter 11 digitos. Cadastro cancelado.\n");
+        printf("\n> ERRO: O CPF deve ter 11 digitos. Cadastro cancelado.\n");
         return lista;
     }
+
+    // ---------------------------------------------
+    Paciente* pacienteExistente = buscarPaciente(lista, cpf);
+    
+    if (pacienteExistente != NULL) {
+        printf("\n> ERRO: Paciente com CPF %s ja esta cadastrado (Nome: %s).\n", cpf, pacienteExistente->nome);
+        printf("> Cadastro cancelado.\n");
+        return lista;
+    }
+    // ---------------------------------------------
 
     lista = inserirElementoFim(lista, nome, idade, cpf);
 
@@ -424,7 +477,7 @@ Paciente* chamarParaFila(FilaDuplaPrioridade* fd, Paciente* lista) {
     return lista;
 }
 
-void finalizarAtendimento(Pilha* p, FilaDuplaPrioridade* fd){  
+void finalizarAtendimento(Pilha* p, FilaDuplaPrioridade* fd, Paciente** listaDePacientes){  
     printf("\n\n~~~~~~~~~~ FINALIZAR ATENDIMENTO ~~~~~~~~~~\n");
 
     Paciente* atendido = NULL;
@@ -439,13 +492,19 @@ void finalizarAtendimento(Pilha* p, FilaDuplaPrioridade* fd){
         printf("\n> Nao ha pacientes na fila de atendimento.\n");
         return;
     }
-
     if (atendido != NULL) {
+        char cpfParaRemover[12];
+        strcpy(cpfParaRemover, atendido->CPF);
+
         empilhar(p, atendido);
         printf("\n>>> Atendimento de %s finalizado e adicionado ao Historico.\n\n", atendido->nome);
+        
+        *listaDePacientes = removerElementoPorCPF(*listaDePacientes, cpfParaRemover);
+        printf(">>> Paciente %s removido da lista de cadastros.\n", cpfParaRemover);
+
         printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
         visualizarFilaDupla(fd);
-    } 
+    }
 }
 
 void visualizarHistorico(Pilha *p){
@@ -495,7 +554,7 @@ void iniciarSistema(){
             chamarParaFila(gerenciadorDeFilaDupla, listaDePacientes);
             break;
         case 5:
-            finalizarAtendimento(gerenciadorPilha, gerenciadorDeFilaDupla);
+            finalizarAtendimento(gerenciadorPilha, gerenciadorDeFilaDupla, &listaDePacientes);
             break; 
         case 6:
             visualizarHistorico(gerenciadorPilha);   

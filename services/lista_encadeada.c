@@ -39,3 +39,33 @@ Paciente* inserirElementoFim(Paciente* lista, char nome[], int idade, char cpf[]
     
     return lista;
 }
+
+Paciente* removerElementoPorCPF(Paciente* lista, const char cpf[]) {
+    if (listaVazia(lista)) {
+        return NULL;
+    }
+
+    Paciente* atual = lista;
+    Paciente* anterior = NULL;
+
+    if (strcmp(atual->CPF, cpf) == 0) {
+        lista = atual->prox;
+        free(atual);
+        return lista;
+    }
+
+    anterior = atual;
+    atual = atual->prox;
+
+    while (atual != NULL) {
+        if (strcmp(atual->CPF, cpf) == 0) {
+            anterior->prox = atual->prox;
+            free(atual);
+            return lista;
+        }
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    return lista;
+}
