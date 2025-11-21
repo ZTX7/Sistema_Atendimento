@@ -323,7 +323,7 @@ void visualizarPacientes(Paciente *lista)   {
         Paciente *temp = lista;
         int i = 1;
         while (temp != NULL){
-            printf("\n------- [Paciente %d] -------", i++);
+            printf("------- [Paciente %d] -------", i++);
             printf("\nNome: %s\n", temp->nome);
             printf("Idade: %d\n", temp->idade);
             printf("CPF: %s\n", temp->CPF);
